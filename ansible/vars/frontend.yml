@@ -1,0 +1,3 @@
+#Domains definition
+domain1: app01-vm-prd.mt.local
+domain2: app02-vm-prd.mt.local

@@ -1,0 +1,73 @@
+---
+- name: NGINX | install epel
+  yum:
+    name:
+      - epel-release
+      - libsemanage-python
+    state:  present
+    update_cache: yes
+  tags:
+    - nginx
+
+- name: NGINX | install NGINX
+  yum:
+    name:
+      - nginx
+    state:  present
+    update_cache: yes
+  tags:
+    - nginx
+
+- name: NGINX | deploy nginx config
+  template:
+    dest:  "/etc/nginx/nginx.conf"
+    src:  "nginx.conf.j2"
+    owner:  root
+    group:  root
+    mode:  0644
+  tags:
+    - nginx
+
+- name: NGINX | prepare directories for ssl
+  file:
+    state:  directory
+    owner:  nginx
+    group:  nginx
+    mode:  0640
+    recurse:  yes
+    path:  /etc/nginx/ssl
+  tags:
+    - nginx
+
+- name: NGINX | enable nginx service
+  systemd:
+    state:  stopped
+    daemon_reload:  yes
+    name:  nginx
+    enabled:  yes
+  tags:
+    - nginx
+
+- name: NGINX | set ipatbles
+  iptables_raw:
+    name:  nginx_inbound
+    weight:  22
+    keep_unmanaged:  yes
+    rules: '-A INPUT -p tcp  -m state --state NEW -m tcp -m multiport --dports 80,443 -j ACCEPT'
+  tags:
+    - nginx
+
+- name: NGINX | set seboolean flags
+  seboolean:
+    name:  "{{item}}"
+    persistent:  yes
+    state:  yes
+  with_items:
+    - httpd_can_network_relay
+    - httpd_can_network_connect
+  when:  ansible_selinux.status != "disabled"
+  tags:
+    - nginx
+
+
+

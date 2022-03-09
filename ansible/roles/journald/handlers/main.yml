@@ -1,0 +1,8 @@
+---
+- name: JOURNALD | Restart journald service
+  service:
+    name: systemd-journald
+    state: restarted
+  tags:
+    - common
+    - journald

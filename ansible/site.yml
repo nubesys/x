@@ -1,0 +1,38 @@
+---
+###
+# Role: base
+###
+- hosts: all
+  become: yes
+  tasks:
+  - name: Display all variables/facts known for a host
+    debug:
+      var: hostvars[inventory_hostname]
+      verbosity: 4
+    tags:
+      - debug
+- hosts: all
+  become: yes
+  roles:
+    - users
+    - journald
+  vars_files:
+    - vars/common.yml
+###
+# end of Role: base
+###
+
+###
+# Role: frontend
+###
+- hosts: default
+  become: yes
+  roles:
+    - { role: nginx, profile: frontend }
+    - secure-ssh
+  vars_files:
+    - vars/common.yml
+    - vars/frontend.yml
+###
+# end of Role: frontend
+###

@@ -1,0 +1,13 @@
+---
+  group_list:
+    devops:
+      system: False
+      gid:    1337
+  user_list:
+    marcinw: 
+      shell: /bin/bash
+      group: devops
+      sshpubkeys:
+          key: AAAAB3NzaC1yc2EAAAADAQABAAABAQCiskrGIyWaOLTWF4LYIACuKD3lP5O7ByW2ToNRC+uVKh6b/W5AiYJSJMsaKhD0S+lgEEFFPV5hVT0Com/U/+GjMk1NIwl/Sp/Bfdo08kog0nByR7/EgulRrVJteB2rv4Xsp75y2Bk93RJoiusex96epkYWFGH1j5dKuE7xa9Xyta2QGIxOqiIwy3wPYyJltWKb05XuPD2K8ZQ73qNXsSh8rLyaU16U0hq7hlqpm5LbIHRmBBKwgJGy7doE9vIul48S7EsLoUzBtw6QA9UXkBW7HPFgyKvuqi/6uhGgmt17HqTyrA26KZoskeAaxyOODRbpBQS9aTyurncBfUi+8dFz
+          enc: ssh-rsa
+          comment: Marcin Wajroch <marcin.wajroch@gmail.com>

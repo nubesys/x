@@ -1,0 +1,22 @@
+---
+
+- name: JOURNALD | Change journald config
+  lineinfile:
+    path: /etc/systemd/journald.conf
+    state: present
+    regexp: "^#Storage="
+    line: 'Storage=persistent'
+    backrefs: yes
+  notify: JOURNALD | Restart journald service
+  tags:
+    - common
+    - journald
+
+- name: JOURNALD | Ensure journald service is running and enabled
+  service:
+    name: systemd-journald
+    state: started
+    enabled: yes
+  tags:
+    - common
+    - journald

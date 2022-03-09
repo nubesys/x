@@ -1,0 +1,50 @@
+---
+
+  - name: "create groups"
+    group:
+      name:   "{{item.key}}"
+      state:  "{{item.value.state | default('present')}}"
+      system: "{{item.value.system | default(False)}}"
+      gid:    "{{item.gid | default(omit)}}"
+    with_dict: "{{group_list}}"
+    tags:
+      - users
+      - common
+
+  - name: "create users"
+    user:
+      name:     "{{item.key}}"
+      uid:      "{{item.value.uid | default(omit)}}"
+      state:    "{{item.value.state | default('present')}}"
+      home:     "{{item.value.home | default('/home/'+item.key)}}"
+      comment:  "{{item.value.comment | default(omit)}}"
+      shell:    "{{item.value.shell | default('/bin/bash')}}"
+      group:    "{{item.value.group | default(omit)}}"
+      groups:   "{{item.value.groups | default(omit)}}"
+    with_dict:  "{{user_list}}"
+    tags:
+      - users
+      - common
+
+  - name: "add public keys"
+    authorized_key:
+      user: "{{item.key}}"
+      state: present
+      key: "{{item.value.sshpubkeys.enc}} {{item.value.sshpubkeys.key}}"
+    with_dict:  "{{user_list}}"
+    tags:
+      - users
+      - common
+
+  - name: "{{item.key}} NOPASSWD /etc/sudoers.d/{{item.key}}"
+    lineinfile:
+      path: "/etc/sudoers.d/{{item.key}}"
+      state: present
+      mode:   0600
+      create: True
+      regexp: '^%w{{item.key}}\s'
+      line: '%{{item.key}} ALL=(ALL) NOPASSWD:ALL'
+    with_dict: "{{group_list}}"
+    tags:
+      - users
+      - common
